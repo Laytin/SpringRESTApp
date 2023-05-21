@@ -15,14 +15,14 @@ public class Customer {
 
     @Column(name = "username")
     private String username;
-    @Column(name = "username")
+    @Column(name = "fullname")
     private String fullname;
-    @Column(name = "username")
+    @Column(name = "email")
     @Email
     private String email;
-    @Column(name = "username")
+    @Column(name = "phone")
     private String phone;
-    @Column(name = "username")
+    @Column(name = "password")
     private String password;
     @OneToMany(mappedBy = "customer")
     @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
