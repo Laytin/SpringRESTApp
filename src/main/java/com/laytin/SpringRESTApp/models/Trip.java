@@ -9,6 +9,7 @@ import java.util.List;
 public class Trip {
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="car_id", referencedColumnName="id")

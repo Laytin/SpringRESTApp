@@ -10,9 +10,9 @@ import java.util.List;
 @Table(name = "Customer")
 public class Customer {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
-
     @Column(name = "username")
     private String username;
     @Column(name = "fullname")

@@ -7,9 +7,13 @@ import javax.persistence.*;
 public class Car {
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "name")
     private String name;
+
+    @Column(name = "number")
+    private String number;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Customer customer;
@@ -17,9 +21,18 @@ public class Car {
     public Car() {
     }
 
-    public Car(String name, Customer customer) {
+    public Car(String name, String number, Customer customer) {
         this.name = name;
+        this.number = number;
         this.customer = customer;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     public int getId() {
