@@ -9,11 +9,8 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 public class CarDTO {
-
     private String name;
     private String number;
-    @NotNull
-    private Customer customer;
 
     public String getNumber() {
         return number;
@@ -31,11 +28,4 @@ public class CarDTO {
         this.name = name;
     }
 
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
 }
