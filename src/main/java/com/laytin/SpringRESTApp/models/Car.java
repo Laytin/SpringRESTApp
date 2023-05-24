@@ -14,7 +14,7 @@ public class Car {
 
     @Column(name = "number")
     private String number;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Customer customer;
 

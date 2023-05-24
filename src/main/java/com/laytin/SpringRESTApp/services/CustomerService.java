@@ -27,12 +27,12 @@ public class CustomerService {
 
     public void edit(int id,Customer c) {
         Customer edited = customerRepository.findById(id).get();
+        c.setId(edited.getId());
+        c.setPassword(edited.getPassword());
+        customerRepository.save(c);
     }
 
     public Customer get(int id) {
         return customerRepository.findById(id).get();
-    }
-    public Customer get(String username) {
-        return customerRepository.findByUsername(username).get();
     }
 }
