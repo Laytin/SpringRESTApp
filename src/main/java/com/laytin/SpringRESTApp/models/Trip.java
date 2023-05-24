@@ -1,5 +1,7 @@
 package com.laytin.SpringRESTApp.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
@@ -26,6 +28,7 @@ public class Trip {
     @Enumerated(value = EnumType.STRING)
     private City place_to;
     @Column(name = "time_out")
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS")
     private Timestamp tm;
     @ManyToMany
     @JoinTable(name = "trip_leg",

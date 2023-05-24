@@ -1,21 +1,31 @@
 package com.laytin.SpringRESTApp.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.laytin.SpringRESTApp.models.Car;
 import com.laytin.SpringRESTApp.models.City;
 import com.laytin.SpringRESTApp.models.Customer;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 public class TripDTO {
     private Car car;
-
-    private Customer customer;
 
     private int free_sits;
 
     private City place_from;
 
     private City place_to;
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS")
+    private Timestamp tm;
+
+    public Timestamp getTm() {
+        return tm;
+    }
+
+    public void setTm(Timestamp tm) {
+        this.tm = tm;
+    }
 
     public Car getCar() {
         return car;
@@ -23,14 +33,6 @@ public class TripDTO {
 
     public void setCar(Car car) {
         this.car = car;
-    }
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
     }
 
     public int getFree_sits() {
