@@ -1,6 +1,10 @@
 package com.laytin.SpringRESTApp.dto;
 
-public class CustomerRequest {
+public class CustomerResponce {
+    private int id;
+
+
+
     private String username;
 
     private String fullname;
@@ -40,6 +44,13 @@ public class CustomerRequest {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
 }
