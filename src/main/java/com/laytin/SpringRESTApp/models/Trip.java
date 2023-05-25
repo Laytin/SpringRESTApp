@@ -13,7 +13,7 @@ public class Trip {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name="car_id", referencedColumnName="id")
     private Car car;
     @ManyToOne()
