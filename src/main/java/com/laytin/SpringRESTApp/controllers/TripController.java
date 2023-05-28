@@ -59,10 +59,20 @@ public class TripController {
     public List<Trip> getTrips(@RequestParam(value = "date",  required = true) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS") LocalDate timing,
                                @RequestParam(value = "place_from", required = true) City place_from,
                                @RequestParam(value = "place_to", required = true) City place_to,
-                               @RequestParam(value = "sits", required = true) int sits){
-        List<Trip> trips = tripService.getTrips(timing,place_from,place_to,sits);
+                               @RequestParam(value = "sits", required = true) int sits,
+                               @RequestParam(value = "page", required = false, defaultValue = "1") int page){
+        List<Trip> trips = tripService.getTrips(timing,place_from,place_to,sits,page);
         if(trips==null || trips.isEmpty())
             return new ArrayList<>();
         return trips;
+    }
+    @GetMapping("/my")
+    public List<Trip> getMyTrips(@RequestParam(value = "page",  required = false, defaultValue = "1") int pagenum, Authentication auth){
+        return tripService.getOwnerTrips(pagenum,(CustomerDetails) auth.getPrincipal());
+    }
+    @GetMapping("/orders")
+    public List<Trip> getJoinedTrips(@RequestParam(value = "page",  required = false, defaultValue = "1") int pagenum,
+                                     @RequestParam(value = "type",  required = true) String type, Authentication auth){
+        return tripService.getOrders(pagenum,type,(CustomerDetails)auth.getPrincipal());
     }
 }
