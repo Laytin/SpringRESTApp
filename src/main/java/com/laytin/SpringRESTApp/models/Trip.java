@@ -32,8 +32,8 @@ public class Trip {
     private Timestamp tm;
     @ManyToMany
     @JoinTable(name = "trip_leg",
-    joinColumns = @JoinColumn(name = "customer_id"),
-    inverseJoinColumns = @JoinColumn(name = "trip_id"))
+    joinColumns = @JoinColumn(name = "trip_id"),
+    inverseJoinColumns = @JoinColumn(name = "customer_id"))
     private List<Customer> passenger;
     public Trip() {
     }
