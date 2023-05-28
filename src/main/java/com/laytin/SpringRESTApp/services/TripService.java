@@ -4,13 +4,18 @@ import com.laytin.SpringRESTApp.dao.TripDAO;
 import com.laytin.SpringRESTApp.models.City;
 import com.laytin.SpringRESTApp.models.Trip;
 import com.laytin.SpringRESTApp.repositories.CarRepository;
+import com.laytin.SpringRESTApp.repositories.CustomerRepository;
 import com.laytin.SpringRESTApp.repositories.TripRepository;
 import com.laytin.SpringRESTApp.security.CustomerDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,11 +23,13 @@ import java.util.Optional;
 public class TripService {
     private final TripRepository tripRepository;
     private final CarRepository carRepository;
+    private final CustomerRepository customerRepository;
     private final TripDAO tripDAO;
     @Autowired
-    public TripService(TripRepository tripRepository, CarRepository carRepository, TripDAO tripDAO) {
+    public TripService(TripRepository tripRepository, CarRepository carRepository, CustomerRepository customerRepository, TripDAO tripDAO) {
         this.tripRepository = tripRepository;
         this.carRepository = carRepository;
+        this.customerRepository = customerRepository;
         this.tripDAO = tripDAO;
     }
     public void register(Trip t, CustomerDetails cd){
@@ -40,7 +47,27 @@ public class TripService {
         return true;
     }
 
-    public List<Trip> getTrips(LocalDate tm, City placeFrom, City placeTo, int sits) {
-        return tripDAO.getTrips(tm,placeFrom,placeTo,sits);
+    public List<Trip> getTrips(LocalDate tm, City placeFrom, City placeTo, int sits, int page) {
+        return tripDAO.getTrips(tm,placeFrom,placeTo,sits, page);
+    }
+    public List<Trip> getOwnerTrips(int page, CustomerDetails cd){
+        List<Trip> trips = tripRepository.findByCustomerId(cd.getCustomer().getId(), PageRequest.of(page-1,10, Sort.by(Sort.Direction.DESC,"tm")));
+        return trips;
+    }
+
+    public List<Trip> getOrders(int pagenum, String valueWhat, CustomerDetails principal) {
+        switch (valueWhat){
+            case "active":
+                return tripRepository.findByPassengerIdAndTmGreaterThan(principal.getCustomer().getId(),
+                        Timestamp.valueOf(LocalDateTime.now()),
+                        PageRequest.of(pagenum-1,10,Sort.by(Sort.Direction.DESC,"tm")));
+            case "old":
+                return tripRepository.findByPassengerIdAndTmLessThan(principal.getCustomer().getId(),
+                        Timestamp.valueOf(LocalDateTime.now()),
+                        PageRequest.of(pagenum-1,10,Sort.by(Sort.Direction.DESC,"tm")));
+            default:
+                return new ArrayList<>();
+        }
+
     }
 }

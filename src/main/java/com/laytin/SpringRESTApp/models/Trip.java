@@ -1,6 +1,8 @@
 package com.laytin.SpringRESTApp.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.sql.Timestamp;

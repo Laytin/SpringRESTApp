@@ -21,7 +21,5 @@ public class CarValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
-        Car c = (Car) target;
-
     }
 }
