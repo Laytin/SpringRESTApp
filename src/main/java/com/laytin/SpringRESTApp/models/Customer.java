@@ -24,14 +24,14 @@ public class Customer {
     private String phone;
     @Column(name = "password")
     private String password;
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer",fetch = FetchType.LAZY)
     @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private List<Car> cars;
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer",fetch = FetchType.LAZY)
     @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private List<Trip> owningtrips;
 
-    @ManyToMany(mappedBy = "passenger")
+    @ManyToMany(mappedBy = "passenger",fetch = FetchType.LAZY)
     private List<Trip> mytrips;
     public Customer() {
     }
