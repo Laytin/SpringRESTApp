@@ -31,8 +31,8 @@ public class Customer {
     @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private List<Trip> owningtrips;
 
-    @ManyToMany(mappedBy = "passenger",fetch = FetchType.LAZY)
-    private List<Trip> mytrips;
+    @OneToMany(mappedBy = "passenger")
+    private List<TripOrder> mytrips;
     public Customer() {
     }
 

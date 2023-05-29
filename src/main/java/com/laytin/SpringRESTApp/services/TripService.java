@@ -58,11 +58,11 @@ public class TripService {
     public List<Trip> getOrders(int pagenum, String valueWhat, CustomerDetails principal) {
         switch (valueWhat){
             case "active":
-                return tripRepository.findByPassengerIdAndTmGreaterThan(principal.getCustomer().getId(),
+                return tripRepository.findByPassengersPassengerIdAndTmGreaterThan(principal.getCustomer().getId(),
                         Timestamp.valueOf(LocalDateTime.now()),
                         PageRequest.of(pagenum-1,10,Sort.by(Sort.Direction.DESC,"tm")));
             case "old":
-                return tripRepository.findByPassengerIdAndTmLessThan(principal.getCustomer().getId(),
+                return tripRepository.findByPassengersPassengerIdAndTmLessThan(principal.getCustomer().getId(),
                         Timestamp.valueOf(LocalDateTime.now()),
                         PageRequest.of(pagenum-1,10,Sort.by(Sort.Direction.DESC,"tm")));
             default:
@@ -77,5 +77,20 @@ public class TripService {
         }
         tripRepository.delete(t.get());
         return true;
+    }
+
+    public boolean joinInTrip(int id, CustomerDetails principal) {
+        Optional<Trip> t = tripRepository.findById(id);
+        if(t.isEmpty()) //no trip with this id
+            return false;
+        if(t.get().getCustomer()==principal.getCustomer()) //u are an owner of this trip
+            return false;
+        if(t.get().getFree_sits()<1){
+        }
+        return true;
+    }
+
+    public void leaveFromTrip(int id, CustomerDetails principal) {
+
     }
 }

@@ -12,6 +12,6 @@ import java.util.List;
 @Repository
 public interface TripRepository extends JpaRepository<Trip,Integer> {
     List<Trip> findByCustomerId(Integer id, PageRequest pageable);
-    List<Trip> findByPassengerIdAndTmLessThan(Integer id, Timestamp tm,PageRequest pageable);
-    List<Trip> findByPassengerIdAndTmGreaterThan(Integer id, Timestamp tm, PageRequest pageable);
+    List<Trip> findByPassengersPassengerIdAndTmLessThan(Integer id, Timestamp tm,PageRequest pageable);
+    List<Trip> findByPassengersPassengerIdAndTmGreaterThan(Integer id, Timestamp tm, PageRequest pageable);
 }

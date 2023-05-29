@@ -1,6 +1,7 @@
 package com.laytin.SpringRESTApp.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -32,11 +33,9 @@ public class Trip {
     @Column(name = "time_out")
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS")
     private Timestamp tm;
-    @ManyToMany
-    @JoinTable(name = "trip_leg",
-    joinColumns = @JoinColumn(name = "trip_id"),
-    inverseJoinColumns = @JoinColumn(name = "customer_id"))
-    private List<Customer> passenger;
+    @OneToMany(mappedBy = "trip")
+    @JsonIgnoreProperties("trip")
+    private List<TripOrder> passengers;
     public Trip() {
     }
 
@@ -103,5 +102,13 @@ public class Trip {
 
     public void setTm(Timestamp tm) {
         this.tm = tm;
+    }
+
+    public List<TripOrder> getPassengers() {
+        return passengers;
+    }
+
+    public void setPassengers(List<TripOrder> passengers) {
+        this.passengers = passengers;
     }
 }
