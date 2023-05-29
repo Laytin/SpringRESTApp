@@ -55,8 +55,14 @@ public class TripController {
             throw new RuntimeException();
         return ResponseEntity.ok(HttpStatus.OK);
     }
-    @GetMapping()
-    public List<Trip> getTrips(@RequestParam(value = "date",  required = true) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS") LocalDate timing,
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> delete(@PathVariable("id") int id, Authentication auth){
+        if(!tripService.delete(id,(CustomerDetails)auth.getPrincipal()))
+            throw new RuntimeException();
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+    @GetMapping("/search")
+    public List<Trip> findTrips(@RequestParam(value = "date",  required = true) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS") LocalDate timing,
                                @RequestParam(value = "place_from", required = true) City place_from,
                                @RequestParam(value = "place_to", required = true) City place_to,
                                @RequestParam(value = "sits", required = true) int sits,

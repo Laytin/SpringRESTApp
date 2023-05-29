@@ -70,4 +70,12 @@ public class TripService {
         }
 
     }
+    public boolean delete(int id, CustomerDetails principal) {
+        Optional<Trip> t = tripRepository.findById(id);
+        if(t.isEmpty() || t.get().getCustomer()!=principal.getCustomer()){
+            return false;
+        }
+        tripRepository.delete(t.get());
+        return true;
+    }
 }
