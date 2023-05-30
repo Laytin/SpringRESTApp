@@ -3,6 +3,7 @@ package com.laytin.SpringRESTApp.controllers;
 import com.laytin.SpringRESTApp.dto.TripDTO;
 import com.laytin.SpringRESTApp.models.City;
 import com.laytin.SpringRESTApp.models.Trip;
+import com.laytin.SpringRESTApp.models.TripOrder;
 import com.laytin.SpringRESTApp.security.CustomerDetails;
 import com.laytin.SpringRESTApp.services.TripService;
 import com.laytin.SpringRESTApp.utils.TripValidator;
@@ -77,8 +78,8 @@ public class TripController {
         return tripService.getOwnerTrips(pagenum,(CustomerDetails) auth.getPrincipal());
     }
     @GetMapping("/orders")
-    public List<Trip> getJoinedTrips(@RequestParam(value = "page",  required = false, defaultValue = "1") int pagenum,
-                                     @RequestParam(value = "type",  required = true) String type, Authentication auth){
+    public List<TripOrder> getJoinedTrips(@RequestParam(value = "page",  required = false, defaultValue = "1") int pagenum,
+                                          @RequestParam(value = "type",  required = true) String type, Authentication auth){
         return tripService.getOrders(pagenum,type,(CustomerDetails)auth.getPrincipal());
     }
     @PatchMapping("/{id}/join")

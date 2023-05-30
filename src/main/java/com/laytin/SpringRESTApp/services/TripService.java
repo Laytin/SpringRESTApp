@@ -3,8 +3,10 @@ package com.laytin.SpringRESTApp.services;
 import com.laytin.SpringRESTApp.dao.TripDAO;
 import com.laytin.SpringRESTApp.models.City;
 import com.laytin.SpringRESTApp.models.Trip;
+import com.laytin.SpringRESTApp.models.TripOrder;
 import com.laytin.SpringRESTApp.repositories.CarRepository;
 import com.laytin.SpringRESTApp.repositories.CustomerRepository;
+import com.laytin.SpringRESTApp.repositories.TripOrderRepository;
 import com.laytin.SpringRESTApp.repositories.TripRepository;
 import com.laytin.SpringRESTApp.security.CustomerDetails;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +26,14 @@ public class TripService {
     private final TripRepository tripRepository;
     private final CarRepository carRepository;
     private final CustomerRepository customerRepository;
+    private final TripOrderRepository tripOrderRepository;
     private final TripDAO tripDAO;
     @Autowired
-    public TripService(TripRepository tripRepository, CarRepository carRepository, CustomerRepository customerRepository, TripDAO tripDAO) {
+    public TripService(TripRepository tripRepository, CarRepository carRepository, CustomerRepository customerRepository, TripOrderRepository tripOrderRepository, TripDAO tripDAO) {
         this.tripRepository = tripRepository;
         this.carRepository = carRepository;
         this.customerRepository = customerRepository;
+        this.tripOrderRepository = tripOrderRepository;
         this.tripDAO = tripDAO;
     }
     public void register(Trip t, CustomerDetails cd){
@@ -55,16 +59,16 @@ public class TripService {
         return trips;
     }
 
-    public List<Trip> getOrders(int pagenum, String valueWhat, CustomerDetails principal) {
+    public List<TripOrder> getOrders(int pagenum, String valueWhat, CustomerDetails principal) {
         switch (valueWhat){
             case "active":
-                return tripRepository.findByPassengersPassengerIdAndTmGreaterThan(principal.getCustomer().getId(),
+                return tripOrderRepository.findByPassengerIdAndTripTmGreaterThan(principal.getCustomer().getId(),
                         Timestamp.valueOf(LocalDateTime.now()),
                         PageRequest.of(pagenum-1,10,Sort.by(Sort.Direction.DESC,"tm")));
             case "old":
-                return tripRepository.findByPassengersPassengerIdAndTmLessThan(principal.getCustomer().getId(),
+                return tripOrderRepository.findByPassengerIdAndTripTmLessThan(principal.getCustomer().getId(),
                         Timestamp.valueOf(LocalDateTime.now()),
-                        PageRequest.of(pagenum-1,10,Sort.by(Sort.Direction.DESC,"tm")));
+                        PageRequest.of(pagenum-1,10,Sort.by(Sort.Direction.DESC,"trip_tm")));
             default:
                 return new ArrayList<>();
         }

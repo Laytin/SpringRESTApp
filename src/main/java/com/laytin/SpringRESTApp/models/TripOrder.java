@@ -1,8 +1,10 @@
 package com.laytin.SpringRESTApp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "triporder")
@@ -13,17 +15,17 @@ public class TripOrder {
     private int id;
     @ManyToOne()
     @JoinColumn(name = "trip_id", referencedColumnName = "id")
-    @JsonIgnore
+    @JsonIgnoreProperties("passengers")
     private Trip trip;
     @ManyToOne()
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
-    @JsonIgnore
     private Customer passenger;
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
     private TripOrderStatus status;
     @Column(name = "sits")
     private int sits;
+
     public TripOrder() {
     }
 
