@@ -35,12 +35,6 @@ public class SpringRestAppApplication {
 				skip(destination.getId());
 			}
 		});
-		modelMapper.addMappings(new PropertyMap<TripDTO, Trip>() {
-			@Override
-			protected void configure() {
-				skip(destination.getId());
-			}
-		});
 		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
 		return modelMapper;
 	}

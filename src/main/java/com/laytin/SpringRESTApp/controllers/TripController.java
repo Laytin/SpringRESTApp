@@ -1,6 +1,7 @@
 package com.laytin.SpringRESTApp.controllers;
 
 import com.laytin.SpringRESTApp.dto.TripDTO;
+import com.laytin.SpringRESTApp.dto.TripResponce;
 import com.laytin.SpringRESTApp.models.City;
 import com.laytin.SpringRESTApp.models.Trip;
 import com.laytin.SpringRESTApp.models.TripOrder;
@@ -17,13 +18,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/trip")
@@ -63,21 +61,26 @@ public class TripController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
     @GetMapping("/search")
-    public List<Trip> findTrips(@RequestParam(value = "date",  required = true) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS") LocalDate timing,
+    public List<TripResponce> findTrips(@RequestParam(value = "date",  required = true) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS") LocalDate timing,
                                @RequestParam(value = "place_from", required = true) City place_from,
                                @RequestParam(value = "place_to", required = true) City place_to,
                                @RequestParam(value = "sits", required = true) int sits,
                                @RequestParam(value = "page", required = false, defaultValue = "1") int page){
-        List<Trip> trips = tripService.getTrips(timing,place_from,place_to,sits,page);
+        List<TripResponce> trips = tripService.getTrips(timing,place_from,place_to,sits,page).
+                stream().map(s-> modelMapper.map(s,TripResponce.class)).collect(Collectors.toList());
         if(trips==null || trips.isEmpty())
             return new ArrayList<>();
         return trips;
     }
     @GetMapping("/my")
-    public List<Trip> getMyTrips(@RequestParam(value = "page",  required = false, defaultValue = "1") int pagenum, Authentication auth){
-        return tripService.getOwnerTrips(pagenum,(CustomerDetails) auth.getPrincipal());
+    public List<TripResponce> getMyTrips(@RequestParam(value = "page",  required = false, defaultValue = "1") int pagenum, Authentication auth){
+        List<TripResponce> trips  =tripService.getOwnerTrips(pagenum,(CustomerDetails) auth.getPrincipal()).
+            stream().map(s-> modelMapper.map(s,TripResponce.class)).collect(Collectors.toList());;
+        if (trips==null || trips.isEmpty())
+            return new ArrayList<>();
+        return trips;
     }
-    @GetMapping("/orders")
+    @GetMapping("/history")
     public List<TripOrder> getJoinedTrips(@RequestParam(value = "page",  required = false, defaultValue = "1") int pagenum,
                                           @RequestParam(value = "type",  required = true) String type, Authentication auth){
         return tripService.getOrders(pagenum,type,(CustomerDetails)auth.getPrincipal());
