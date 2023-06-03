@@ -1,5 +1,6 @@
 package com.laytin.SpringRESTApp.models;
 
+import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
@@ -32,6 +33,7 @@ public class Customer {
     private List<Trip> owningtrips;
 
     @OneToMany(mappedBy = "passenger", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<TripOrder> mytrips;
     public Customer() {
     }

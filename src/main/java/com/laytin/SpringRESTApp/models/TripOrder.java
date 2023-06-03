@@ -2,6 +2,8 @@ package com.laytin.SpringRESTApp.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import net.minidev.json.annotate.JsonIgnore;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -17,7 +19,8 @@ public class TripOrder {
     @JoinColumn(name = "trip_id", referencedColumnName = "id")
     @JsonIgnoreProperties("passengers")
     private Trip trip;
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Customer passenger;
     @Column(name = "status")
