@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.validation.constraints.Email;
 
 public class CustomerDTO {
+    private int id;
+
     private String username;
 
     private String fullname;
@@ -13,7 +15,13 @@ public class CustomerDTO {
     private String phone;
 
     private String password;
+    public int getId() {
+        return id;
+    }
 
+    public void setId(int id) {
+        this.id = id;
+    }
     public String getUsername() {
         return username;
     }
