@@ -2,7 +2,6 @@ package com.laytin.SpringRESTApp.controllers;
 
 import com.laytin.SpringRESTApp.dto.AuthDTO;
 import com.laytin.SpringRESTApp.dto.CustomerDTO;
-import com.laytin.SpringRESTApp.dto.CustomerResponce;
 import com.laytin.SpringRESTApp.models.Customer;
 import com.laytin.SpringRESTApp.security.JWTCore;
 import com.laytin.SpringRESTApp.services.CustomerService;
@@ -65,8 +64,8 @@ public class CustomerController {
     }
     @GetMapping("/{id}")
     @PreAuthorize("#id == authentication.principal.customer.id")
-    public CustomerResponce getUser(@PathVariable("id") int id){
-        return modelMapper.map(customerService.get(id), CustomerResponce.class);
+    public CustomerDTO getUser(@PathVariable("id") int id){
+        return modelMapper.map(customerService.get(id), CustomerDTO.class);
     }
     @PatchMapping("/{id}")
     @PreAuthorize("#id == authentication.principal.customer.id")
