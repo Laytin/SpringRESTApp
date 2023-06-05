@@ -25,6 +25,8 @@ public class CarController {
     public CarController(CarService carService, ModelMapper modelMapper) {
         this.carService = carService;
         this.modelMapper = modelMapper;
+        modelMapper.typeMap(CarDTO.class, Car.class)
+                .addMappings(mapper -> mapper.skip(Car::setId));
     }
     @GetMapping()
     public List<CarDTO> getCars(Authentication auth){

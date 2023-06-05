@@ -9,7 +9,8 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 public class TripDTO {
-    private Car car;
+    private int id;
+    private CarDTO car;
 
     private int free_sits;
 
@@ -19,6 +20,14 @@ public class TripDTO {
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS")
     private Timestamp tm;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public Timestamp getTm() {
         return tm;
     }
@@ -27,11 +36,11 @@ public class TripDTO {
         this.tm = tm;
     }
 
-    public Car getCar() {
+    public CarDTO getCar() {
         return car;
     }
 
-    public void setCar(Car car) {
+    public void setCar(CarDTO car) {
         this.car = car;
     }
 

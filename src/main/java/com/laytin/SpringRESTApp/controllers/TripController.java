@@ -1,7 +1,6 @@
 package com.laytin.SpringRESTApp.controllers;
 
 import com.laytin.SpringRESTApp.dto.TripDTO;
-import com.laytin.SpringRESTApp.dto.TripResponce;
 import com.laytin.SpringRESTApp.models.City;
 import com.laytin.SpringRESTApp.models.Trip;
 import com.laytin.SpringRESTApp.models.TripOrder;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,23 +59,19 @@ public class TripController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
     @GetMapping("/search")
-    public List<TripResponce> findTrips(@RequestParam(value = "date",  required = true) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS") LocalDate timing,
+    public List<TripDTO> findTrips(@RequestParam(value = "date",  required = true) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS") LocalDate timing,
                                @RequestParam(value = "place_from", required = true) City place_from,
                                @RequestParam(value = "place_to", required = true) City place_to,
                                @RequestParam(value = "sits", required = true) int sits,
                                @RequestParam(value = "page", required = false, defaultValue = "1") int page){
-        List<TripResponce> trips = tripService.getTrips(timing,place_from,place_to,sits,page).
-                stream().map(s-> modelMapper.map(s,TripResponce.class)).collect(Collectors.toList());
-        if(trips==null || trips.isEmpty())
-            return new ArrayList<>();
+        List<TripDTO> trips = tripService.getTrips(timing,place_from,place_to,sits,page).
+                stream().map(s-> modelMapper.map(s,TripDTO.class)).collect(Collectors.toList());
         return trips;
     }
     @GetMapping("/my")
-    public List<TripResponce> getMyTrips(@RequestParam(value = "page",  required = false, defaultValue = "1") int pagenum, Authentication auth){
-        List<TripResponce> trips  =tripService.getOwnerTrips(pagenum,(CustomerDetails) auth.getPrincipal()).
-            stream().map(s-> modelMapper.map(s,TripResponce.class)).collect(Collectors.toList());;
-        if (trips==null || trips.isEmpty())
-            return new ArrayList<>();
+    public List<TripDTO> getMyTrips(@RequestParam(value = "page",  required = false, defaultValue = "1") int pagenum, Authentication auth){
+        List<TripDTO> trips  =tripService.getOwnerTrips(pagenum,(CustomerDetails) auth.getPrincipal()).
+            stream().map(s-> modelMapper.map(s,TripDTO.class)).collect(Collectors.toList());;
         return trips;
     }
     @GetMapping("/history")

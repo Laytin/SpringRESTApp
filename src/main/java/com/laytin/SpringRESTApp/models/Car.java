@@ -27,6 +27,9 @@ public class Car {
         this.customer = customer;
     }
 
+    public Car(int id) {
+    }
+
     public String getNumber() {
         return number;
     }
