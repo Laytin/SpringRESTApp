@@ -70,7 +70,7 @@ public class TripController {
     }
     @GetMapping("/my")
     public List<TripDTO> getMyTrips(@RequestParam(value = "page",  required = false, defaultValue = "1") int pagenum, Authentication auth){
-        List<TripDTO> trips  =tripService.getOwnerTrips(pagenum,(CustomerDetails) auth.getPrincipal()).
+        List<TripDTO> trips =tripService.getOwnerTrips(pagenum,(CustomerDetails) auth.getPrincipal()).
             stream().map(s-> modelMapper.map(s,TripDTO.class)).collect(Collectors.toList());;
         return trips;
     }

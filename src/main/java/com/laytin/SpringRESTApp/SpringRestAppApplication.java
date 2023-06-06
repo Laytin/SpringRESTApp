@@ -3,9 +3,11 @@ package com.laytin.SpringRESTApp;
 import com.laytin.SpringRESTApp.dto.CarDTO;
 import com.laytin.SpringRESTApp.dto.CustomerDTO;
 import com.laytin.SpringRESTApp.dto.TripDTO;
+import com.laytin.SpringRESTApp.dto.TripOrderDTO;
 import com.laytin.SpringRESTApp.models.Car;
 import com.laytin.SpringRESTApp.models.Customer;
 import com.laytin.SpringRESTApp.models.Trip;
+import com.laytin.SpringRESTApp.models.TripOrder;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.modelmapper.config.Configuration;
@@ -36,6 +38,12 @@ public class SpringRestAppApplication {
 			protected void configure() {
 				skip(destination.getId());
 				map(source.getCar(), destination.getCar());
+			}
+		});
+		modelMapper.addMappings(new PropertyMap<TripOrderDTO, TripOrder>() {
+			@Override
+			protected void configure() {
+				skip(destination.getId());
 			}
 		});
 		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE)
