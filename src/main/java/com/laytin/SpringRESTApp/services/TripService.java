@@ -83,18 +83,4 @@ public class TripService {
         return true;
     }
 
-    public boolean joinInTrip(int id, CustomerDetails principal) {
-        Optional<Trip> t = tripRepository.findById(id);
-        if(t.isEmpty()) //no trip with this id
-            return false;
-        if(t.get().getCustomer()==principal.getCustomer()) //u are an owner of this trip
-            return false;
-        if(t.get().getFree_sits()<1){
-        }
-        return true;
-    }
-
-    public void leaveFromTrip(int id, CustomerDetails principal) {
-
-    }
 }
