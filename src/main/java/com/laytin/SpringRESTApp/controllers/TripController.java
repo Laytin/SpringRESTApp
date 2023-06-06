@@ -79,14 +79,4 @@ public class TripController {
                                           @RequestParam(value = "type",  required = true) String type, Authentication auth){
         return tripService.getOrders(pagenum,type,(CustomerDetails)auth.getPrincipal());
     }
-    @PatchMapping("/{id}/join")
-    public ResponseEntity<HttpStatus> join(@PathVariable("id") int id, Authentication auth){
-        tripService.joinInTrip(id,(CustomerDetails) auth.getPrincipal());
-        return ResponseEntity.ok(HttpStatus.OK);
-    }
-    @PatchMapping("/{id}/leave")
-    public ResponseEntity<HttpStatus> leave(@PathVariable("id") int id, Authentication auth){
-        tripService.leaveFromTrip(id,(CustomerDetails) auth.getPrincipal());
-        return ResponseEntity.ok(HttpStatus.OK);
-    }
 }
