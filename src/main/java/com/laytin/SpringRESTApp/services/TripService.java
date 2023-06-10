@@ -1,6 +1,7 @@
 package com.laytin.SpringRESTApp.services;
 
 import com.laytin.SpringRESTApp.dao.TripDAO;
+import com.laytin.SpringRESTApp.dto.TripDTO;
 import com.laytin.SpringRESTApp.models.City;
 import com.laytin.SpringRESTApp.models.Trip;
 import com.laytin.SpringRESTApp.models.TripOrder;
@@ -83,4 +84,10 @@ public class TripService {
         return true;
     }
 
+    public Trip getTripById(int id, CustomerDetails principal) {
+        Optional<Trip> t = tripRepository.findById(id);
+        if(t.isEmpty() || t.get().getCustomer().getId()!=principal.getCustomer().getId())
+            return null;
+        return t.get();
+    }
 }

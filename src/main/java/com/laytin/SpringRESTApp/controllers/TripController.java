@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -78,5 +79,12 @@ public class TripController {
     public List<TripOrder> getJoinedTrips(@RequestParam(value = "page",  required = false, defaultValue = "1") int pagenum,
                                           @RequestParam(value = "type",  required = true) String type, Authentication auth){
         return tripService.getOrders(pagenum,type,(CustomerDetails)auth.getPrincipal());
+    }
+    @GetMapping("/{id}")
+    public TripDTO getId(@PathVariable("id") int id, Authentication auth){
+        Trip t = tripService.getTripById(id,(CustomerDetails)auth.getPrincipal());
+        if(t==null)
+            throw new RuntimeException();
+        return modelMapper.map(t,TripDTO.class);
     }
 }
