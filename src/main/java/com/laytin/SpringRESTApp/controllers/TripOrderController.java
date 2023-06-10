@@ -11,10 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -37,6 +34,13 @@ public class TripOrderController {
         if(result.hasErrors())
             throw new RuntimeException();
         tripOrderService.join(o,(CustomerDetails)auth.getPrincipal());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @PatchMapping("/{id}")
+    public ResponseEntity<HttpStatus> acceptOrDecline(@PathVariable("{id}") int id, @RequestBody TripOrderDTO tripOrderDTO, BindingResult result, Authentication auth){
+        tripOrderService.acceptOrDecline(modelMapper.map(tripOrderDTO, TripOrder.class),(CustomerDetails) auth.getPrincipal(),result);
+        if(result.hasErrors())
+            throw new RuntimeException();
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
