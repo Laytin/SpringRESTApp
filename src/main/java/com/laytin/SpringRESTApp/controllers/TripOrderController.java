@@ -2,6 +2,7 @@ package com.laytin.SpringRESTApp.controllers;
 
 import com.laytin.SpringRESTApp.dto.TripOrderDTO;
 import com.laytin.SpringRESTApp.models.TripOrder;
+import com.laytin.SpringRESTApp.models.TripOrderStatus;
 import com.laytin.SpringRESTApp.security.CustomerDetails;
 import com.laytin.SpringRESTApp.services.TripOrderService;
 import com.laytin.SpringRESTApp.utils.TripOrderValidator;
@@ -14,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/order")
@@ -37,8 +39,10 @@ public class TripOrderController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @PatchMapping("/{id}")
-    public ResponseEntity<HttpStatus> acceptOrDecline(@PathVariable("{id}") int id, @RequestBody TripOrderDTO tripOrderDTO, BindingResult result, Authentication auth){
-        tripOrderService.acceptOrDecline(modelMapper.map(tripOrderDTO, TripOrder.class),(CustomerDetails) auth.getPrincipal(),result);
+    public ResponseEntity<HttpStatus> acceptOrDecline(@PathVariable("id") int id,
+                                                      @RequestParam(value = "status",  required = true) TripOrderStatus status,
+                                                      BindingResult result, Authentication auth){
+        tripOrderService.acceptOrDecline(id,status,(CustomerDetails) auth.getPrincipal(),result);
         if(result.hasErrors())
             throw new RuntimeException();
         return new ResponseEntity<>(HttpStatus.OK);

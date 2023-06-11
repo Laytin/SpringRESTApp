@@ -1,6 +1,7 @@
 package com.laytin.SpringRESTApp.controllers;
 
 import com.laytin.SpringRESTApp.dto.TripDTO;
+import com.laytin.SpringRESTApp.dto.TripOrderDTO;
 import com.laytin.SpringRESTApp.models.City;
 import com.laytin.SpringRESTApp.models.Trip;
 import com.laytin.SpringRESTApp.models.TripOrder;
@@ -76,9 +77,10 @@ public class TripController {
         return trips;
     }
     @GetMapping("/history")
-    public List<TripOrder> getJoinedTrips(@RequestParam(value = "page",  required = false, defaultValue = "1") int pagenum,
+    public List<TripOrderDTO> getJoinedTrips(@RequestParam(value = "page",  required = false, defaultValue = "1") int pagenum,
                                           @RequestParam(value = "type",  required = true) String type, Authentication auth){
-        return tripService.getOrders(pagenum,type,(CustomerDetails)auth.getPrincipal());
+        return tripService.getOrders(pagenum,type,(CustomerDetails)auth.getPrincipal()).
+                stream().map(s-> modelMapper.map(s, TripOrderDTO.class)).collect(Collectors.toList());
     }
     @GetMapping("/{id}")
     public TripDTO getId(@PathVariable("id") int id, Authentication auth){
