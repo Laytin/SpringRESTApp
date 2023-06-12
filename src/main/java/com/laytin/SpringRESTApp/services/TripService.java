@@ -10,6 +10,7 @@ import com.laytin.SpringRESTApp.repositories.CustomerRepository;
 import com.laytin.SpringRESTApp.repositories.TripOrderRepository;
 import com.laytin.SpringRESTApp.repositories.TripRepository;
 import com.laytin.SpringRESTApp.security.CustomerDetails;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -60,16 +61,16 @@ public class TripService {
         return trips;
     }
 
-    public List<TripOrder> getOrders(int pagenum, String valueWhat, CustomerDetails principal) {
+    public List<Trip> getOrders(int pagenum, String valueWhat, CustomerDetails principal) {
         switch (valueWhat){
             case "active":
-                return tripOrderRepository.findByPassengerIdAndTripTmGreaterThan(principal.getCustomer().getId(),
+                return tripRepository.findByPassengersPassengerIdAndTmGreaterThan(principal.getCustomer().getId(),
                         Timestamp.valueOf(LocalDateTime.now()),
                         PageRequest.of(pagenum-1,10,Sort.by(Sort.Direction.DESC,"tm")));
             case "old":
-                return tripOrderRepository.findByPassengerIdAndTripTmLessThan(principal.getCustomer().getId(),
+                return tripRepository.findByPassengersPassengerIdAndTmLessThan(principal.getCustomer().getId(),
                         Timestamp.valueOf(LocalDateTime.now()),
-                        PageRequest.of(pagenum-1,10,Sort.by(Sort.Direction.DESC,"trip_tm")));
+                        PageRequest.of(pagenum-1,10,Sort.by(Sort.Direction.DESC,"tm")));
             default:
                 return new ArrayList<>();
         }
@@ -86,8 +87,10 @@ public class TripService {
 
     public Trip getTripById(int id, CustomerDetails principal) {
         Optional<Trip> t = tripRepository.findById(id);
-        if(t.isEmpty() || t.get().getCustomer().getId()!=principal.getCustomer().getId())
+        if(t.isEmpty())
             return null;
+        if(t.get().getCustomer().getId()==principal.getCustomer().getId())
+            Hibernate.initialize(t.get().getPassengers());
         return t.get();
     }
 }

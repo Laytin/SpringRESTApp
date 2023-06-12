@@ -34,7 +34,7 @@ public class Trip {
     @Column(name = "time_out")
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS")
     private Timestamp tm;
-    @OneToMany(mappedBy = "trip")
+    @OneToMany(mappedBy = "trip", fetch = FetchType.LAZY)
     @JsonIgnoreProperties("trip")
     private List<TripOrder> passengers;
     public Trip() {

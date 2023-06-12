@@ -63,7 +63,4 @@ public class TripOrderService {
         }
     }
 
-    public List<TripOrderDTO> getOrders(int tripId, CustomerDetails principal) {
-
-    }
 }

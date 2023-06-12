@@ -77,10 +77,10 @@ public class TripController {
         return trips;
     }
     @GetMapping("/history")
-    public List<TripOrderDTO> getJoinedTrips(@RequestParam(value = "page",  required = false, defaultValue = "1") int pagenum,
-                                          @RequestParam(value = "type",  required = true) String type, Authentication auth){
+    public List<TripDTO> getJoinedTrips(@RequestParam(value = "page",  required = false, defaultValue = "1") int pagenum,
+                                        @RequestParam(value = "type",  required = true) String type, Authentication auth){
         return tripService.getOrders(pagenum,type,(CustomerDetails)auth.getPrincipal()).
-                stream().map(s-> modelMapper.map(s, TripOrderDTO.class)).collect(Collectors.toList());
+                stream().map(s-> modelMapper.map(s, TripDTO.class)).collect(Collectors.toList());
     }
     @GetMapping("/{id}")
     public TripDTO getId(@PathVariable("id") int id, Authentication auth){
@@ -88,5 +88,9 @@ public class TripController {
         if(t==null)
             throw new RuntimeException();
         return modelMapper.map(t,TripDTO.class);
+    }
+    @GetMapping("/{id}/orders")
+    public List<TripOrderDTO> getOrdersByTrip(@PathVariable("id") int id, Authentication auth){
+        return null;
     }
 }

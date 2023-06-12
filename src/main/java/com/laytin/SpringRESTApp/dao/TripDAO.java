@@ -34,4 +34,5 @@ public class TripDAO {
                         .setFirstResult((page-1)*10);
         return q.getResultList();
     }
+
 }
