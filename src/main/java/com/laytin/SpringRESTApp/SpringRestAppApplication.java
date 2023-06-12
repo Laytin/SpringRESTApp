@@ -33,6 +33,12 @@ public class SpringRestAppApplication {
 				skip(destination.getId());
 			}
 		});
+		modelMapper.addMappings(new PropertyMap<Customer, CustomerDTO>() {
+			@Override
+			protected void configure() {
+				skip(destination.getPassword());
+			}
+		});
 		modelMapper.addMappings(new PropertyMap<TripDTO, Trip>() {
 			@Override
 			protected void configure() {
@@ -44,6 +50,14 @@ public class SpringRestAppApplication {
 			@Override
 			protected void configure() {
 				skip(destination.getId());
+			}
+		});
+
+		modelMapper.addMappings(new PropertyMap<TripOrder, TripOrderDTO>() {
+			@Override
+			protected void configure() {
+				skip(destination.getTrip());
+				skip(destination.getPassenger().getPassword());
 			}
 		});
 		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE)

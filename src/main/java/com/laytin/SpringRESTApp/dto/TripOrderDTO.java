@@ -12,9 +12,9 @@ import javax.persistence.*;
 public class TripOrderDTO {
     private int id;
 
-    private Trip trip;
+    private TripDTO trip;
 
-    private Customer passenger;
+    private CustomerDTO passenger;
 
     private TripOrderStatus status;
 
@@ -28,19 +28,19 @@ public class TripOrderDTO {
         this.id = id;
     }
 
-    public Trip getTrip() {
+    public TripDTO getTrip() {
         return trip;
     }
 
-    public void setTrip(Trip trip) {
+    public void setTrip(TripDTO trip) {
         this.trip = trip;
     }
 
-    public Customer getPassenger() {
+    public CustomerDTO getPassenger() {
         return passenger;
     }
 
-    public void setPassenger(Customer passenger) {
+    public void setPassenger(CustomerDTO passenger) {
         this.passenger = passenger;
     }
 

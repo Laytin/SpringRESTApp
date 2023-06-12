@@ -47,4 +47,10 @@ public class TripOrderController {
             throw new RuntimeException();
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteOrder(@PathVariable("id") int id, Authentication auth){
+        if(!tripOrderService.delete(id,(CustomerDetails) auth.getPrincipal()))
+            throw new RuntimeException();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

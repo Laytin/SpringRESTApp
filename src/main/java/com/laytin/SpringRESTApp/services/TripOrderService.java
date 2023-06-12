@@ -8,6 +8,9 @@ import com.laytin.SpringRESTApp.repositories.CustomerRepository;
 import com.laytin.SpringRESTApp.repositories.TripOrderRepository;
 import com.laytin.SpringRESTApp.repositories.TripRepository;
 import com.laytin.SpringRESTApp.security.CustomerDetails;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
@@ -63,4 +66,11 @@ public class TripOrderService {
         }
     }
 
+    public boolean delete(int id, CustomerDetails auth) {
+        Optional<TripOrder> t = tripOrderRepository.findById(id);
+        if(t.isEmpty() || t.get().getPassenger().getId()!=auth.getCustomer().getId())
+            return false;
+        tripOrderRepository.delete(t.get());
+        return true;
+    }
 }

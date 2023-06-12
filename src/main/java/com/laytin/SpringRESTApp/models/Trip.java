@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.LazyToOne;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -34,7 +35,7 @@ public class Trip {
     @Column(name = "time_out")
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS")
     private Timestamp tm;
-    @OneToMany(mappedBy = "trip", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "trip")
     @JsonIgnoreProperties("trip")
     private List<TripOrder> passengers;
     public Trip() {

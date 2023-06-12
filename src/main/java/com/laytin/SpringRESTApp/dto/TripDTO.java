@@ -7,18 +7,28 @@ import com.laytin.SpringRESTApp.models.Customer;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 public class TripDTO {
     private int id;
     private CarDTO car;
-
+    private CustomerDTO customer;
     private int free_sits;
 
     private City place_from;
 
     private City place_to;
+    private List<TripOrderDTO> passengers;
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS")
     private Timestamp tm;
+
+    public List<TripOrderDTO> getPassengers() {
+        return passengers;
+    }
+
+    public void setPassengers(List<TripOrderDTO> passengers) {
+        this.passengers = passengers;
+    }
 
     public int getId() {
         return id;
@@ -66,5 +76,12 @@ public class TripDTO {
 
     public void setPlace_to(City place_to) {
         this.place_to = place_to;
+    }
+    public CustomerDTO getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(CustomerDTO customer) {
+        this.customer = customer;
     }
 }

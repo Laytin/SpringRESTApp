@@ -32,7 +32,7 @@ public class Customer {
     @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private List<Trip> owningtrips;
 
-    @OneToMany(mappedBy = "passenger", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "passenger")
     @JsonIgnore
     private List<TripOrder> mytrips;
     public Customer() {
