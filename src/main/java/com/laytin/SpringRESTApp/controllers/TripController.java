@@ -89,8 +89,4 @@ public class TripController {
             throw new RuntimeException();
         return modelMapper.map(t,TripDTO.class);
     }
-    @GetMapping("/{id}/orders")
-    public List<TripOrderDTO> getOrdersByTrip(@PathVariable("id") int id, Authentication auth){
-        return null;
-    }
 }
