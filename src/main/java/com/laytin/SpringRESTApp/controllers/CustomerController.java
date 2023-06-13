@@ -5,7 +5,7 @@ import com.laytin.SpringRESTApp.dto.CustomerDTO;
 import com.laytin.SpringRESTApp.models.Customer;
 import com.laytin.SpringRESTApp.security.JWTCore;
 import com.laytin.SpringRESTApp.services.CustomerService;
-import com.laytin.SpringRESTApp.utils.CustomerValidator;
+import com.laytin.SpringRESTApp.utils.validators.CustomerValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package com.laytin.SpringRESTApp.utils;
+package com.laytin.SpringRESTApp.utils.validators;
 
 import com.laytin.SpringRESTApp.models.Trip;
 import com.laytin.SpringRESTApp.models.TripOrder;

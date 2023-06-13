@@ -1,4 +1,4 @@
-package com.laytin.SpringRESTApp.utils;
+package com.laytin.SpringRESTApp.utils.validators;
 
 import com.laytin.SpringRESTApp.models.Car;
 import com.laytin.SpringRESTApp.services.CarService;

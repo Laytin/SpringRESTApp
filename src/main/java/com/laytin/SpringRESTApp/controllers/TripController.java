@@ -1,14 +1,13 @@
 package com.laytin.SpringRESTApp.controllers;
 
 import com.laytin.SpringRESTApp.dto.TripDTO;
-import com.laytin.SpringRESTApp.dto.TripOrderDTO;
 import com.laytin.SpringRESTApp.models.City;
 import com.laytin.SpringRESTApp.models.Trip;
-import com.laytin.SpringRESTApp.models.TripOrder;
 import com.laytin.SpringRESTApp.security.CustomerDetails;
 import com.laytin.SpringRESTApp.services.TripService;
-import com.laytin.SpringRESTApp.utils.TripValidator;
+import com.laytin.SpringRESTApp.utils.validators.TripValidator;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -29,6 +27,7 @@ public class TripController {
     private final TripService tripService;
     private final ModelMapper modelMapper;
     private final TripValidator tripValidator;
+
     @Autowired
     public TripController(TripService tripService, ModelMapper modelMapper, TripValidator tripValidator) {
         this.tripService = tripService;
@@ -67,7 +66,12 @@ public class TripController {
                                @RequestParam(value = "sits", required = true) int sits,
                                @RequestParam(value = "page", required = false, defaultValue = "1") int page){
         List<TripDTO> trips = tripService.getTrips(timing,place_from,place_to,sits,page).
-                stream().map(s-> modelMapper.map(s,TripDTO.class)).collect(Collectors.toList());
+                stream().map(s->modelMapper.addMappings(new PropertyMap<Trip, TripDTO>() {
+                    @Override
+                    protected void configure() {
+                        skip(destination.getPassengers());
+                    }
+                }).map(s)).collect(Collectors.toList());
         return trips;
     }
     @GetMapping("/my")
@@ -79,8 +83,10 @@ public class TripController {
     @GetMapping("/history")
     public List<TripDTO> getJoinedTrips(@RequestParam(value = "page",  required = false, defaultValue = "1") int pagenum,
                                         @RequestParam(value = "type",  required = true) String type, Authentication auth){
-        return tripService.getOrders(pagenum,type,(CustomerDetails)auth.getPrincipal()).
+        List<TripDTO> result =tripService.getOrders(pagenum,type,(CustomerDetails)auth.getPrincipal()).
                 stream().map(s-> modelMapper.map(s, TripDTO.class)).collect(Collectors.toList());
+        result.stream().forEach(s-> s.setPassengers(s.getPassengers().stream().filter(p->p.getPassenger().getId()==s.getCustomer().getId()).collect(Collectors.toList())));
+        return result;
     }
     @GetMapping("/{id}")
     public TripDTO getId(@PathVariable("id") int id, Authentication auth){
