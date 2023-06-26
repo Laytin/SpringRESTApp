@@ -77,15 +77,14 @@ public class TripController {
     @GetMapping("/my")
     public List<TripDTO> getMyTrips(@RequestParam(value = "page",  required = false, defaultValue = "1") int pagenum, Authentication auth){
         List<TripDTO> trips =tripService.getOwnerTrips(pagenum,(CustomerDetails) auth.getPrincipal()).
-            stream().map(s-> modelMapper.map(s,TripDTO.class)).collect(Collectors.toList());;
+            stream().map(s-> modelMapper.map(s,TripDTO.class)).collect(Collectors.toList());
         return trips;
     }
     @GetMapping("/history")
     public List<TripDTO> getJoinedTrips(@RequestParam(value = "page",  required = false, defaultValue = "1") int pagenum,
                                         @RequestParam(value = "type",  required = true) String type, Authentication auth){
         List<TripDTO> result =tripService.getOrders(pagenum,type,(CustomerDetails)auth.getPrincipal()).
-                stream().map(s-> modelMapper.map(s, TripDTO.class)).collect(Collectors.toList());
-        result.stream().forEach(s-> s.setPassengers(s.getPassengers().stream().filter(p->p.getPassenger().getId()==s.getCustomer().getId()).collect(Collectors.toList())));
+                stream().map(s-> modelMapper.map(s,TripDTO.class)).collect(Collectors.toList());
         return result;
     }
     @GetMapping("/{id}")

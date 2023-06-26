@@ -49,7 +49,6 @@ public class CustomerController {
             return Map.of("message", "Incorrect credentials!");
         }
         String token = jwtCore.generateToken(customerDTO.getUsername());
-        System.out.println(token);
         return Map.of("jwt-token", token);
     }
     @PostMapping("/register")
