@@ -5,6 +5,8 @@ import com.laytin.SpringRESTApp.dto.CustomerDTO;
 import com.laytin.SpringRESTApp.models.Customer;
 import com.laytin.SpringRESTApp.security.JWTCore;
 import com.laytin.SpringRESTApp.services.CustomerService;
+import com.laytin.SpringRESTApp.utils.DefaulErrorResponce;
+import com.laytin.SpringRESTApp.utils.DefaultErrorException;
 import com.laytin.SpringRESTApp.utils.validators.CustomerValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Map;
+
+import static com.laytin.SpringRESTApp.utils.ErrorBuilder.buildErrorMessageForClient;
 
 @RestController
 @RequestMapping("/customer")
@@ -56,7 +60,7 @@ public class CustomerController {
         Customer c = modelMapper.map(customerDTO, Customer.class);
         customerValidator.validate(c,result);
         if(result.hasErrors())
-            throw new RuntimeException();
+            buildErrorMessageForClient(result);
         customerService.register(c);
         String token = jwtCore.generateToken(c.getUsername());
         return Map.of("jwt-token", token);
@@ -72,9 +76,17 @@ public class CustomerController {
         Customer c = modelMapper.map(customerDTO, Customer.class);
         customerValidator.validate(c,result);
         if(result.hasErrors())
-            throw new RuntimeException();
+            buildErrorMessageForClient(result);
         customerService.edit(id,c);
         return ResponseEntity.ok(HttpStatus.OK);
+    }
+    @ExceptionHandler
+    private ResponseEntity<DefaulErrorResponce> handleException(DefaultErrorException e) {
+        DefaulErrorResponce response = new DefaulErrorResponce(
+                e.getMessage(),
+                System.currentTimeMillis()
+        );
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
 

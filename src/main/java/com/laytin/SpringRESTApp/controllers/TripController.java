@@ -5,6 +5,8 @@ import com.laytin.SpringRESTApp.models.City;
 import com.laytin.SpringRESTApp.models.Trip;
 import com.laytin.SpringRESTApp.security.CustomerDetails;
 import com.laytin.SpringRESTApp.services.TripService;
+import com.laytin.SpringRESTApp.utils.DefaulErrorResponce;
+import com.laytin.SpringRESTApp.utils.DefaultErrorException;
 import com.laytin.SpringRESTApp.utils.validators.TripValidator;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
@@ -20,6 +22,8 @@ import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.laytin.SpringRESTApp.utils.ErrorBuilder.buildErrorMessageForClient;
 
 @RestController
 @RequestMapping("/trip")
@@ -39,7 +43,7 @@ public class TripController {
         Trip t = modelMapper.map(tripDTO, Trip.class);
         tripValidator.validate(t,result);
         if(result.hasErrors())
-            throw new RuntimeException();
+            buildErrorMessageForClient(result);
         tripService.register(t,(CustomerDetails)auth.getPrincipal());
         return ResponseEntity.ok(HttpStatus.OK);
     }
@@ -48,15 +52,15 @@ public class TripController {
         Trip t = modelMapper.map(tripDTO, Trip.class);
         tripValidator.validate(t,result);
         if(result.hasErrors())
-            throw new RuntimeException();
+            buildErrorMessageForClient(result);
         if(!tripService.edit(id,t,(CustomerDetails)auth.getPrincipal()))
-            throw new RuntimeException();
+            buildErrorMessageForClient("Error due editing trip, try again");
         return ResponseEntity.ok(HttpStatus.OK);
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> delete(@PathVariable("id") int id, Authentication auth){
         if(!tripService.delete(id,(CustomerDetails)auth.getPrincipal()))
-            throw new RuntimeException();
+            buildErrorMessageForClient("Error due deleting trip. Are u rly owner of this trip?");
         return ResponseEntity.ok(HttpStatus.OK);
     }
     @GetMapping("/search")
@@ -91,7 +95,15 @@ public class TripController {
     public TripDTO getId(@PathVariable("id") int id, Authentication auth){
         Trip t = tripService.getTripById(id,(CustomerDetails)auth.getPrincipal());
         if(t==null)
-            throw new RuntimeException();
+            buildErrorMessageForClient("Trip does not exist!");
         return modelMapper.map(t,TripDTO.class);
+    }
+    @ExceptionHandler
+    private ResponseEntity<DefaulErrorResponce> handleException(DefaultErrorException e) {
+        DefaulErrorResponce response = new DefaulErrorResponce(
+                e.getMessage(),
+                System.currentTimeMillis()
+        );
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

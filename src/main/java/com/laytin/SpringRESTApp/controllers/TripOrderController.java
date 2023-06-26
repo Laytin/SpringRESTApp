@@ -5,6 +5,8 @@ import com.laytin.SpringRESTApp.models.TripOrder;
 import com.laytin.SpringRESTApp.models.TripOrderStatus;
 import com.laytin.SpringRESTApp.security.CustomerDetails;
 import com.laytin.SpringRESTApp.services.TripOrderService;
+import com.laytin.SpringRESTApp.utils.DefaulErrorResponce;
+import com.laytin.SpringRESTApp.utils.DefaultErrorException;
 import com.laytin.SpringRESTApp.utils.validators.TripOrderValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import static com.laytin.SpringRESTApp.utils.ErrorBuilder.buildErrorMessageForClient;
 
 @RestController
 @RequestMapping("/order")
@@ -33,7 +37,7 @@ public class TripOrderController {
         TripOrder o = modelMapper.map(tripOrderDTO,TripOrder.class);
         validator.validate(o,result);
         if(result.hasErrors())
-            throw new RuntimeException();
+            buildErrorMessageForClient(result);
         tripOrderService.join(o,(CustomerDetails)auth.getPrincipal());
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -43,13 +47,21 @@ public class TripOrderController {
                                                       BindingResult result, Authentication auth){
         tripOrderService.acceptOrDecline(id,status,(CustomerDetails) auth.getPrincipal(),result);
         if(result.hasErrors())
-            throw new RuntimeException();
+            buildErrorMessageForClient(result);
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteOrder(@PathVariable("id") int id, Authentication auth){
         if(!tripOrderService.delete(id,(CustomerDetails) auth.getPrincipal()))
-            throw new RuntimeException();
+            buildErrorMessageForClient("Error due deleting trip order.");
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @ExceptionHandler
+    private ResponseEntity<DefaulErrorResponce> handleException(DefaultErrorException e) {
+        DefaulErrorResponce response = new DefaulErrorResponce(
+                e.getMessage(),
+                System.currentTimeMillis()
+        );
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
