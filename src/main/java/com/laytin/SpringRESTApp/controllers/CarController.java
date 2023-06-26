@@ -4,6 +4,9 @@ import com.laytin.SpringRESTApp.dto.CarDTO;
 import com.laytin.SpringRESTApp.models.Car;
 import com.laytin.SpringRESTApp.security.CustomerDetails;
 import com.laytin.SpringRESTApp.services.CarService;
+import com.laytin.SpringRESTApp.utils.DefaulErrorResponce;
+import com.laytin.SpringRESTApp.utils.DefaultErrorException;
+import com.laytin.SpringRESTApp.utils.ErrorBuilder;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.laytin.SpringRESTApp.utils.ErrorBuilder.buildErrorMessageForClient;
 
 @RestController
 @RequestMapping("/car")
@@ -37,31 +42,38 @@ public class CarController {
         cars.stream().forEach(c -> result.add(modelMapper.map(c, CarDTO.class)));
         return result;
     }
-    @GetMapping("/{id}")
-    public CarDTO getCar(@PathVariable("id") int id, Authentication auth){
-        Car car = carService.getCar(id, (CustomerDetails) auth.getPrincipal());
-        if(car==null)
-            throw new RuntimeException();
-        return modelMapper.map(car,CarDTO.class);
-    }
     @PostMapping()
     public ResponseEntity<HttpStatus> add(@RequestBody @Valid CarDTO carDTO, BindingResult result, Authentication auth){
         if(result.hasErrors())
-            throw new RuntimeException();
-
+            buildErrorMessageForClient(result);
         Car c = modelMapper.map(carDTO, Car.class);
         carService.register(c,(CustomerDetails)auth.getPrincipal());
         return ResponseEntity.ok(HttpStatus.OK);
     }
+    @GetMapping("/{id}")
+    public CarDTO getCar(@PathVariable("id") int id, Authentication auth){
+        Car car = carService.getCar(id, (CustomerDetails) auth.getPrincipal());
+        if(car==null)
+            buildErrorMessageForClient("Car does not exist!");
+        return modelMapper.map(car,CarDTO.class);
+    }
     @PatchMapping("/{id}")
     public ResponseEntity<HttpStatus> edit(@PathVariable("id") int id, @RequestBody @Valid CarDTO carDTO, BindingResult result, Authentication auth) {
         if(result.hasErrors())
-            throw new RuntimeException();
+            buildErrorMessageForClient(result);
 
         Car c = modelMapper.map(carDTO, Car.class);
 
         if(!carService.edit(id,c,(CustomerDetails)auth.getPrincipal(),result))
-            throw new RuntimeException();
+            buildErrorMessageForClient("Error due edit, try again");
         return ResponseEntity.ok(HttpStatus.OK);
+    }
+    @ExceptionHandler
+    private ResponseEntity<DefaulErrorResponce> handleException(DefaultErrorException e) {
+        DefaulErrorResponce response = new DefaulErrorResponce(
+                e.getMessage(),
+                System.currentTimeMillis()
+        );
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
