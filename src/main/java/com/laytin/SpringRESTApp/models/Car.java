@@ -1,6 +1,7 @@
 package com.laytin.SpringRESTApp.models;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name = "Car")
@@ -10,9 +11,11 @@ public class Car {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "name")
+    @NotEmpty
     private String name;
 
     @Column(name = "number")
+    @NotEmpty
     private String number;
     @ManyToOne()
     @JoinColumn(name = "customer_id", referencedColumnName = "id")

@@ -6,8 +6,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.LazyToOne;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -25,12 +28,15 @@ public class Trip {
     @JoinColumn(name="customer_id", referencedColumnName="id")
     private Customer customer;
     @Column(name = "free_sits")
+    @Min(0)
     private int free_sits;
     @Column(name = "place_from")
     @Enumerated(value = EnumType.STRING)
+    @NotEmpty
     private City place_from;
     @Column(name = "place_to")
     @Enumerated(value = EnumType.STRING)
+    @NotEmpty
     private City place_to;
     @Column(name = "time_out")
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS")

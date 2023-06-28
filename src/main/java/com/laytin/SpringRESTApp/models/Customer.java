@@ -5,6 +5,7 @@ import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Entity
@@ -15,13 +16,17 @@ public class Customer {
     @Column(name = "id")
     private int id;
     @Column(name = "username")
+    @NotEmpty
     private String username;
     @Column(name = "fullname")
+    @NotEmpty
     private String fullname;
     @Column(name = "email")
     @Email
+    @NotEmpty
     private String email;
     @Column(name = "phone")
+    @NotEmpty
     private String phone;
     @Column(name = "password")
     private String password;
