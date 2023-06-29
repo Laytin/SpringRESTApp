@@ -1,4 +1,4 @@
-package com.laytin.SpringRESTApp.utils;
+package com.laytin.SpringRESTApp.utils.errors;
 
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;

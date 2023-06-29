@@ -1,4 +1,4 @@
-package com.laytin.SpringRESTApp.utils;
+package com.laytin.SpringRESTApp.utils.errors;
 
 public class DefaulErrorResponce {
     private String message;

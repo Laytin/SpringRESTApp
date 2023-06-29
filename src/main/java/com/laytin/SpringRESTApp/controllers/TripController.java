@@ -5,8 +5,8 @@ import com.laytin.SpringRESTApp.models.City;
 import com.laytin.SpringRESTApp.models.Trip;
 import com.laytin.SpringRESTApp.security.CustomerDetails;
 import com.laytin.SpringRESTApp.services.TripService;
-import com.laytin.SpringRESTApp.utils.DefaulErrorResponce;
-import com.laytin.SpringRESTApp.utils.DefaultErrorException;
+import com.laytin.SpringRESTApp.utils.errors.DefaulErrorResponce;
+import com.laytin.SpringRESTApp.utils.errors.DefaultErrorException;
 import com.laytin.SpringRESTApp.utils.validators.TripValidator;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
@@ -23,7 +23,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.laytin.SpringRESTApp.utils.ErrorBuilder.buildErrorMessageForClient;
+import static com.laytin.SpringRESTApp.utils.errors.ErrorBuilder.buildErrorMessageForClient;
 
 @RestController
 @RequestMapping("/trip")

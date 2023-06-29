@@ -4,9 +4,8 @@ import com.laytin.SpringRESTApp.dto.CarDTO;
 import com.laytin.SpringRESTApp.models.Car;
 import com.laytin.SpringRESTApp.security.CustomerDetails;
 import com.laytin.SpringRESTApp.services.CarService;
-import com.laytin.SpringRESTApp.utils.DefaulErrorResponce;
-import com.laytin.SpringRESTApp.utils.DefaultErrorException;
-import com.laytin.SpringRESTApp.utils.ErrorBuilder;
+import com.laytin.SpringRESTApp.utils.errors.DefaulErrorResponce;
+import com.laytin.SpringRESTApp.utils.errors.DefaultErrorException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +18,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.laytin.SpringRESTApp.utils.ErrorBuilder.buildErrorMessageForClient;
+import static com.laytin.SpringRESTApp.utils.errors.ErrorBuilder.buildErrorMessageForClient;
 
 @RestController
 @RequestMapping("/car")
