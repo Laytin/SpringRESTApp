@@ -1,10 +1,8 @@
 package com.laytin.SpringRESTApp;
 
-import com.laytin.SpringRESTApp.dto.CarDTO;
 import com.laytin.SpringRESTApp.dto.CustomerDTO;
 import com.laytin.SpringRESTApp.dto.TripDTO;
 import com.laytin.SpringRESTApp.dto.TripOrderDTO;
-import com.laytin.SpringRESTApp.models.Car;
 import com.laytin.SpringRESTApp.models.Customer;
 import com.laytin.SpringRESTApp.models.Trip;
 import com.laytin.SpringRESTApp.models.TripOrder;
@@ -15,7 +13,6 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.convention.NamingConventions;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication()
