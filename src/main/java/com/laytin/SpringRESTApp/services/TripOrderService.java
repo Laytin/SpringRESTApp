@@ -1,6 +1,5 @@
 package com.laytin.SpringRESTApp.services;
 
-import com.laytin.SpringRESTApp.dto.TripOrderDTO;
 import com.laytin.SpringRESTApp.models.Trip;
 import com.laytin.SpringRESTApp.models.TripOrder;
 import com.laytin.SpringRESTApp.models.TripOrderStatus;
@@ -8,13 +7,9 @@ import com.laytin.SpringRESTApp.repositories.CustomerRepository;
 import com.laytin.SpringRESTApp.repositories.TripOrderRepository;
 import com.laytin.SpringRESTApp.repositories.TripRepository;
 import com.laytin.SpringRESTApp.security.CustomerDetails;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -36,15 +31,15 @@ public class TripOrderService {
         tripOrderRepository.save(o);
     }
 
-    public void acceptOrDecline(int id, TripOrderStatus status, CustomerDetails principal, BindingResult result) {
+    public TripOrder acceptOrDecline(int id, TripOrderStatus status, CustomerDetails principal, BindingResult result) {
         Optional<TripOrder> to = tripOrderRepository.findById(id);
         if(to.isEmpty())
-            return;
+            return null;
 
         Trip t = to.get().getTrip();
         if(t.getCustomer().getId()!=principal.getCustomer().getId()){
             result.rejectValue("id", "", "You are not an owner");
-            return;
+            return null;
         }
         switch (status){
             case ACCEPTED:
@@ -56,14 +51,13 @@ public class TripOrderService {
                 }
                 to.get().setStatus(status);
                 t.setFree_sits(t.getFree_sits()-to.get().getSits());
-                tripOrderRepository.save(to.get());
                 tripRepository.save(t);
-                break;
+                return tripOrderRepository.save(to.get());
             case CANCELED:
                 to.get().setStatus(status);
-                tripOrderRepository.save(to.get());
-                break;
+                return tripOrderRepository.save(to.get());
         }
+        return null;
     }
 
     public boolean delete(int id, CustomerDetails auth) {

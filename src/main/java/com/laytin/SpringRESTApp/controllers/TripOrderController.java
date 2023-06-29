@@ -7,6 +7,7 @@ import com.laytin.SpringRESTApp.security.CustomerDetails;
 import com.laytin.SpringRESTApp.services.TripOrderService;
 import com.laytin.SpringRESTApp.utils.errors.DefaulErrorResponce;
 import com.laytin.SpringRESTApp.utils.errors.DefaultErrorException;
+import com.laytin.SpringRESTApp.utils.rabbitmq.RabbitMQSender;
 import com.laytin.SpringRESTApp.utils.validators.TripOrderValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +27,13 @@ public class TripOrderController {
     private final TripOrderService tripOrderService;
     private final ModelMapper modelMapper;
     private final TripOrderValidator validator;
+    private final RabbitMQSender rqm;
     @Autowired
-    public TripOrderController(TripOrderService tripOrderService, ModelMapper modelMapper, TripOrderValidator validator) {
+    public TripOrderController(TripOrderService tripOrderService, ModelMapper modelMapper, TripOrderValidator validator, RabbitMQSender rqm) {
         this.tripOrderService = tripOrderService;
         this.modelMapper = modelMapper;
         this.validator = validator;
+        this.rqm = rqm;
     }
     @PostMapping()
     public ResponseEntity<HttpStatus> join(@RequestBody @Valid TripOrderDTO tripOrderDTO, BindingResult result,Authentication auth){
@@ -45,9 +48,11 @@ public class TripOrderController {
     public ResponseEntity<HttpStatus> acceptOrDecline(@PathVariable("id") int id,
                                                       @RequestParam(value = "status",  required = true) TripOrderStatus status,
                                                       BindingResult result, Authentication auth){
-        tripOrderService.acceptOrDecline(id,status,(CustomerDetails) auth.getPrincipal(),result);
-        if(result.hasErrors())
+        TripOrder res = tripOrderService.acceptOrDecline(id,status,(CustomerDetails) auth.getPrincipal(),result);
+        if(result.hasErrors() || res == null)
             buildErrorMessageForClient(result);
+
+        rqm.sendObject(modelMapper.map(res,TripOrderDTO.class));
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @DeleteMapping("/{id}")
