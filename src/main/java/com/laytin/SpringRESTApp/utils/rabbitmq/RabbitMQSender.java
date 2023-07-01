@@ -19,7 +19,7 @@ public class RabbitMQSender {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void sendObject(Object o) {
-        rabbitTemplate.convertAndSend(exchange, routingKey,o);
+    public void sendObject(Object o, String key) {
+        rabbitTemplate.convertAndSend(exchange, key,o);
     }
 }

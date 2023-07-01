@@ -1,6 +1,7 @@
 package com.laytin.SpringRESTApp.controllers;
 
 import com.laytin.SpringRESTApp.dto.TripOrderDTO;
+import com.laytin.SpringRESTApp.models.Trip;
 import com.laytin.SpringRESTApp.models.TripOrder;
 import com.laytin.SpringRESTApp.models.TripOrderStatus;
 import com.laytin.SpringRESTApp.security.CustomerDetails;
@@ -41,7 +42,9 @@ public class TripOrderController {
         validator.validate(o,result);
         if(result.hasErrors())
             buildErrorMessageForClient(result);
-        tripOrderService.join(o,(CustomerDetails)auth.getPrincipal());
+        TripOrder res = tripOrderService.join(o,(CustomerDetails)auth.getPrincipal());
+
+        rqm.sendObject(modelMapper.map(res,TripOrderDTO.class), "order-create");
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @PatchMapping("/{id}")
@@ -52,7 +55,7 @@ public class TripOrderController {
         if(result.hasErrors() || res == null)
             buildErrorMessageForClient(result);
 
-        rqm.sendObject(modelMapper.map(res,TripOrderDTO.class));
+        rqm.sendObject(modelMapper.map(res,TripOrderDTO.class), "order-edit");
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @DeleteMapping("/{id}")

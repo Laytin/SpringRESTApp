@@ -24,11 +24,12 @@ public class TripOrderService {
         this.tripOrderRepository = tripOrderRepository;
     }
 
-    public void join(TripOrder o, CustomerDetails principal) {
+    public TripOrder join(TripOrder o, CustomerDetails principal) {
         o.setStatus(TripOrderStatus.WAITING_DECISION);
         o.setPassenger(principal.getCustomer());
         //t.setFree_sits(t.getFree_sits()-o.getSits());
-        tripOrderRepository.save(o);
+        TripOrder res = tripOrderRepository.save(o);
+        return res;
     }
 
     public TripOrder acceptOrDecline(int id, TripOrderStatus status, CustomerDetails principal, BindingResult result) {
