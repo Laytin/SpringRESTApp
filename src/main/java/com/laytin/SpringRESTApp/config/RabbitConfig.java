@@ -11,22 +11,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Configuration
 public class RabbitConfig {
-    @Value("${rabbitmq.exchange.name}")
-    private String exchange;
+    //private String[] keys = {"order-create","order-edit"};
 
-    @Value("${rabbitmq.queue.name}")
-    private String queue;
-
-    @Value("${rabbitmq.routing.key}")
-    private String routingKey;
     @Bean
     public ConnectionFactory connectionFactory() {
         CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory("localhost");
-        cachingConnectionFactory.setUsername("user");
-        cachingConnectionFactory.setPassword("password");
-        cachingConnectionFactory.setVirtualHost("cpp");
+        cachingConnectionFactory.setUsername("guest");
+        cachingConnectionFactory.setPassword("guest");
+        cachingConnectionFactory.setVirtualHost("/");
         return cachingConnectionFactory;
     }
 
@@ -47,16 +45,16 @@ public class RabbitConfig {
     }
     @Bean
     public Queue myQueue() {
-        return new Queue(queue);
+        return new Queue("q.order-create");
     }
 
     @Bean
     DirectExchange exchange() {
-        return new DirectExchange(exchange, true, false);
+        return new DirectExchange("testExchange", true, false);
     }
 
     @Bean
     Binding binding(Queue queue, DirectExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(routingKey);
+        return BindingBuilder.bind(queue).to(exchange).with("order-create");
     }
 }

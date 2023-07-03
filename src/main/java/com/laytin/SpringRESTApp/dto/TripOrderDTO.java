@@ -58,4 +58,15 @@ public class TripOrderDTO {
     public void setSits(int sits) {
         this.sits = sits;
     }
+
+    @Override
+    public String toString() {
+        return "TripOrderDTO{" +
+                "id=" + id +
+                ", trip=" + trip +
+                ", passenger=" + passenger +
+                ", status=" + status +
+                ", sits=" + sits +
+                '}';
+    }
 }

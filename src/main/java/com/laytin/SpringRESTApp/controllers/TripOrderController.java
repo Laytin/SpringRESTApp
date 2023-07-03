@@ -44,7 +44,7 @@ public class TripOrderController {
             buildErrorMessageForClient(result);
         TripOrder res = tripOrderService.join(o,(CustomerDetails)auth.getPrincipal());
 
-        rqm.sendObject(modelMapper.map(res,TripOrderDTO.class), "order-create");
+        rqm.sendObject(modelMapper.map(res,TripOrderDTO.class), "q.order-create");
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @PatchMapping("/{id}")
@@ -55,7 +55,7 @@ public class TripOrderController {
         if(result.hasErrors() || res == null)
             buildErrorMessageForClient(result);
 
-        rqm.sendObject(modelMapper.map(res,TripOrderDTO.class), "order-edit");
+        rqm.sendObject(modelMapper.map(res,TripOrderDTO.class), "q.order-edit");
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @DeleteMapping("/{id}")

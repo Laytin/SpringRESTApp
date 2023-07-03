@@ -38,8 +38,9 @@ public class SpringRestAppApplication {
 		});
 		modelMapper.addMappings(new PropertyMap<TripDTO, Trip>() {
 			@Override
-			protected void configure() {
-				skip(destination.getId());
+			protected void configure(){
+				// Should fix it
+				//skip(destination.getId());
 				map(source.getCar(), destination.getCar());
 			}
 		});
