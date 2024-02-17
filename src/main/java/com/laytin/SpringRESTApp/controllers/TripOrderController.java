@@ -38,11 +38,11 @@ public class TripOrderController {
         this.rqm = rqm;
     }
     @GetMapping("/history")
-    public List<TripOrderJoinerResponce> getJoinedTrips(@RequestParam(value = "page",  required = false, defaultValue = "1") int pagenum,
+    public List<TripOrder> getJoinedTrips(@RequestParam(value = "page",  required = false, defaultValue = "1") int pagenum,
                                                         @RequestParam(value = "type",  required = true) String type, Authentication auth){
         //tupes: old , active
         List<TripOrder> gett =tripOrderService.getOrders(pagenum,type,(CustomerDetails)auth.getPrincipal());
-        return null;
+        return gett;
     }
     @PostMapping()
     public ResponseEntity<HttpStatus> join(@RequestBody @Valid TripOrderDTO tripOrderDTO, BindingResult result,Authentication auth){
