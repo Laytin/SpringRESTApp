@@ -32,16 +32,14 @@ public class Trip {
     private int free_sits;
     @Column(name = "place_from")
     @Enumerated(value = EnumType.STRING)
-    @NotEmpty
     private City place_from;
     @Column(name = "place_to")
     @Enumerated(value = EnumType.STRING)
-    @NotEmpty
     private City place_to;
     @Column(name = "time_out")
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS")
     private Timestamp tm;
-    @OneToMany(mappedBy = "trip", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "trip", fetch = FetchType.LAZY)
     @Fetch(value = FetchMode.JOIN)
     @JsonIgnoreProperties("trip")
     private List<TripOrder> passengers;

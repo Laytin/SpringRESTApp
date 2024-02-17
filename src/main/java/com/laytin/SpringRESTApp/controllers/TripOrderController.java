@@ -1,7 +1,6 @@
 package com.laytin.SpringRESTApp.controllers;
 
 import com.laytin.SpringRESTApp.dto.TripOrderDTO;
-import com.laytin.SpringRESTApp.models.Trip;
 import com.laytin.SpringRESTApp.models.TripOrder;
 import com.laytin.SpringRESTApp.models.TripOrderStatus;
 import com.laytin.SpringRESTApp.security.CustomerDetails;
@@ -20,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import java.util.List;
+
 import static com.laytin.SpringRESTApp.utils.errors.ErrorBuilder.buildErrorMessageForClient;
 
 @RestController
@@ -36,15 +37,22 @@ public class TripOrderController {
         this.validator = validator;
         this.rqm = rqm;
     }
+    @GetMapping("/history")
+    public List<TripOrderJoinerResponce> getJoinedTrips(@RequestParam(value = "page",  required = false, defaultValue = "1") int pagenum,
+                                                        @RequestParam(value = "type",  required = true) String type, Authentication auth){
+        //tupes: old , active
+        List<TripOrder> gett =tripOrderService.getOrders(pagenum,type,(CustomerDetails)auth.getPrincipal());
+        return null;
+    }
     @PostMapping()
     public ResponseEntity<HttpStatus> join(@RequestBody @Valid TripOrderDTO tripOrderDTO, BindingResult result,Authentication auth){
         TripOrder o = modelMapper.map(tripOrderDTO,TripOrder.class);
         validator.validate(o,result);
         if(result.hasErrors())
             buildErrorMessageForClient(result);
-        TripOrder res = tripOrderService.join(o,(CustomerDetails)auth.getPrincipal());
+        tripOrderService.join(o,(CustomerDetails)auth.getPrincipal());
 
-        rqm.sendObject(modelMapper.map(res,TripOrderDTO.class), "q.order-create");
+        //rqm.sendObject(modelMapper.map(res,TripOrderDTO.class), "q.order-create");
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @PatchMapping("/{id}")
@@ -55,7 +63,7 @@ public class TripOrderController {
         if(result.hasErrors() || res == null)
             buildErrorMessageForClient(result);
 
-        rqm.sendObject(modelMapper.map(res,TripOrderDTO.class), "q.order-edit");
+        //rqm.sendObject(modelMapper.map(res,TripOrderDTO.class), "q.order-edit");
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @DeleteMapping("/{id}")

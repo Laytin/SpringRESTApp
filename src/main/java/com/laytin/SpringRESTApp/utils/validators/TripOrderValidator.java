@@ -2,6 +2,7 @@ package com.laytin.SpringRESTApp.utils.validators;
 
 import com.laytin.SpringRESTApp.models.Trip;
 import com.laytin.SpringRESTApp.models.TripOrder;
+import com.laytin.SpringRESTApp.models.TripOrderStatus;
 import com.laytin.SpringRESTApp.repositories.TripOrderRepository;
 import com.laytin.SpringRESTApp.repositories.TripRepository;
 import com.laytin.SpringRESTApp.security.CustomerDetails;
@@ -37,5 +38,7 @@ public class TripOrderValidator implements Validator {
             errors.rejectValue("sits", "", "No more sits!");
         if(t.get().getCustomer().getId()==((CustomerDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getCustomer().getId())
             errors.rejectValue("customer","","Owner cant be a passenger");
+        if(t.get().getPassengers().stream().anyMatch(f->f.getPassenger().getId()==((CustomerDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getCustomer().getId()))
+            errors.rejectValue("trip","","Order already exist");
     }
 }

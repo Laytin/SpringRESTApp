@@ -14,7 +14,6 @@ public class CustomerDTO {
 
     private String phone;
 
-    private String password;
     public int getId() {
         return id;
     }
@@ -54,11 +53,4 @@ public class CustomerDTO {
         this.phone = phone;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }

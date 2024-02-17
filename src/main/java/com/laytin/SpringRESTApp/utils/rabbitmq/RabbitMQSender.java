@@ -16,6 +16,6 @@ public class RabbitMQSender {
 
     public void sendObject(Object o, String key) {
         System.out.println("sending: "+key+ " : "+ o.toString() );
-        rabbitTemplate.convertAndSend("testExchange", "order-create","helloworld");
+        //rabbitTemplate.convertAndSend("testExchange", "order-create",o);
     }
 }

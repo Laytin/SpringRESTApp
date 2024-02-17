@@ -19,11 +19,9 @@ public class Customer {
     @NotEmpty
     private String username;
     @Column(name = "fullname")
-    @NotEmpty
     private String fullname;
     @Column(name = "email")
     @Email
-    @NotEmpty
     private String email;
     @Column(name = "phone")
     @NotEmpty

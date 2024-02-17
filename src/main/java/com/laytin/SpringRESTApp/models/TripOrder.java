@@ -20,7 +20,6 @@ public class TripOrder implements Serializable {
     private int id;
     @ManyToOne()
     @JoinColumn(name = "trip_id", referencedColumnName = "id")
-    @JsonIgnore
     private Trip trip;
     @ManyToOne()
     @JoinColumn(name = "customer_id", referencedColumnName = "id")

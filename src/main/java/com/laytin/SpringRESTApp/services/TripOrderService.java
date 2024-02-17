@@ -1,15 +1,20 @@
 package com.laytin.SpringRESTApp.services;
 
-import com.laytin.SpringRESTApp.models.Trip;
-import com.laytin.SpringRESTApp.models.TripOrder;
-import com.laytin.SpringRESTApp.models.TripOrderStatus;
+import com.laytin.SpringRESTApp.models.*;
 import com.laytin.SpringRESTApp.repositories.CustomerRepository;
 import com.laytin.SpringRESTApp.repositories.TripOrderRepository;
 import com.laytin.SpringRESTApp.repositories.TripRepository;
 import com.laytin.SpringRESTApp.security.CustomerDetails;
+import org.hibernate.Hibernate;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,20 +23,39 @@ public class TripOrderService {
     private final TripRepository tripRepository;
     private final TripOrderRepository tripOrderRepository;
 
+
     public TripOrderService(CustomerRepository customerRepository, TripRepository tripRepository, TripOrderRepository tripOrderRepository) {
         this.customerRepository = customerRepository;
         this.tripRepository = tripRepository;
         this.tripOrderRepository = tripOrderRepository;
     }
 
-    public TripOrder join(TripOrder o, CustomerDetails principal) {
+    public boolean join(TripOrder o, CustomerDetails principal) {
+        Optional<Trip> t = tripRepository.findById(o.getTrip().getId());
+        if(!t.isPresent() || t.get().getFree_sits()<o.getSits())
+             return false;
+        t.get().setFree_sits(t.get().getFree_sits()-o.getSits());
         o.setStatus(TripOrderStatus.WAITING_DECISION);
         o.setPassenger(principal.getCustomer());
-        //t.setFree_sits(t.getFree_sits()-o.getSits());
-        TripOrder res = tripOrderRepository.save(o);
-        return res;
+        tripOrderRepository.save(o);
+        tripRepository.save(t.get());
+        return true;
     }
+    public List<TripOrder> getOrders(int pagenum, String valueWhat, CustomerDetails principal) {
+        switch (valueWhat){
+            case "active":
+                return tripOrderRepository.findByPassengerIdAndTripTmGreaterThan(principal.getCustomer().getId(),
+                        Timestamp.valueOf(LocalDateTime.now()),
+                        PageRequest.of(pagenum-1,10, Sort.by(Sort.Direction.DESC,"trip.tm")));
+            case "old":
+                return tripOrderRepository.findByPassengerIdAndTripTmLessThan(principal.getCustomer().getId(),
+                        Timestamp.valueOf(LocalDateTime.now()),
+                        PageRequest.of(pagenum-1,10,Sort.by(Sort.Direction.DESC,"trip.tm")));
+            default:
+                return new ArrayList<>();
+        }
 
+    }
     public TripOrder acceptOrDecline(int id, TripOrderStatus status, CustomerDetails principal, BindingResult result) {
         Optional<TripOrder> to = tripOrderRepository.findById(id);
         if(to.isEmpty())
@@ -44,23 +68,16 @@ public class TripOrderService {
         }
         switch (status){
             case ACCEPTED:
-                if(to.get().getSits()>t.getFree_sits()){
-                    to.get().setStatus(TripOrderStatus.CANCELED);
-                    result.rejectValue("sits", "", "You have less free sits that in order! Сanceled forcibly");
-                    tripOrderRepository.save(to.get());
-                    break;
-                }
                 to.get().setStatus(status);
-                t.setFree_sits(t.getFree_sits()-to.get().getSits());
                 tripRepository.save(t);
                 return tripOrderRepository.save(to.get());
             case CANCELED:
+                t.setFree_sits(t.getFree_sits()+to.get().getSits());
                 to.get().setStatus(status);
                 return tripOrderRepository.save(to.get());
         }
         return null;
     }
-
     public boolean delete(int id, CustomerDetails auth) {
         Optional<TripOrder> t = tripOrderRepository.findById(id);
         if(t.isEmpty() || t.get().getPassenger().getId()!=auth.getCustomer().getId())

@@ -28,7 +28,6 @@ public class CustomerService {
     public void edit(int id,Customer c) {
         Customer edited = customerRepository.findById(id).get();
         c.setId(edited.getId());
-        c.setPassword(edited.getPassword());
         customerRepository.save(c);
     }
 

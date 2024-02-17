@@ -1,5 +1,5 @@
 package com.laytin.SpringRESTApp.models;
 
 public enum TripOrderStatus {
-    WAITING_DECISION, ACCEPTED, CANCELED
+    WAITING_DECISION, ACCEPTED, CANCELED, CANCELED_AUTO
 }

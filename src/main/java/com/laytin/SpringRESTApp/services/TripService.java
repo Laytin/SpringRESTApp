@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -61,21 +62,7 @@ public class TripService {
         return trips;
     }
 
-    public List<Trip> getOrders(int pagenum, String valueWhat, CustomerDetails principal) {
-        switch (valueWhat){
-            case "active":
-                return tripRepository.findByPassengersPassengerIdAndTmGreaterThan(principal.getCustomer().getId(),
-                        Timestamp.valueOf(LocalDateTime.now()),
-                        PageRequest.of(pagenum-1,10,Sort.by(Sort.Direction.DESC,"tm")));
-            case "old":
-                return tripRepository.findByPassengersPassengerIdAndTmLessThan(principal.getCustomer().getId(),
-                        Timestamp.valueOf(LocalDateTime.now()),
-                        PageRequest.of(pagenum-1,10,Sort.by(Sort.Direction.DESC,"tm")));
-            default:
-                return new ArrayList<>();
-        }
 
-    }
     public boolean delete(int id, CustomerDetails principal) {
         Optional<Trip> t = tripRepository.findById(id);
         if(t.isEmpty() || t.get().getCustomer()!=principal.getCustomer()){
