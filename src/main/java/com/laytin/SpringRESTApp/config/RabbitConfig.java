@@ -50,11 +50,11 @@ public class RabbitConfig {
 
     @Bean
     DirectExchange exchange() {
-        return new DirectExchange("testExchange", true, false);
+        return new DirectExchange("emailExchange", true, false);
     }
 
     @Bean
     Binding binding(Queue queue, DirectExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with("order-create");
+        return BindingBuilder.bind(queue).to(exchange).with("r.order-create");
     }
 }

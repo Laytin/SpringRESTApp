@@ -3,6 +3,7 @@ package com.laytin.SpringRESTApp.models;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.LazyToOne;
@@ -41,6 +42,7 @@ public class Trip {
     private Timestamp tm;
     @OneToMany(mappedBy = "trip", fetch = FetchType.LAZY)
     @Fetch(value = FetchMode.JOIN)
+    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     @JsonIgnoreProperties("trip")
     private List<TripOrder> passengers;
     public Trip() {

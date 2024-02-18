@@ -2,12 +2,11 @@ package com.laytin.SpringRESTApp.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import net.minidev.json.annotate.JsonIgnore;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.LazyToOne;
-import org.hibernate.annotations.LazyToOneOption;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
@@ -20,6 +19,7 @@ public class TripOrder implements Serializable {
     private int id;
     @ManyToOne()
     @JoinColumn(name = "trip_id", referencedColumnName = "id")
+    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private Trip trip;
     @ManyToOne()
     @JoinColumn(name = "customer_id", referencedColumnName = "id")

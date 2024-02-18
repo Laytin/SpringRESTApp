@@ -29,13 +29,11 @@ public class TripOrderController {
     private final TripOrderService tripOrderService;
     private final ModelMapper modelMapper;
     private final TripOrderValidator validator;
-    private final RabbitMQSender rqm;
     @Autowired
-    public TripOrderController(TripOrderService tripOrderService, ModelMapper modelMapper, TripOrderValidator validator, RabbitMQSender rqm) {
+    public TripOrderController(TripOrderService tripOrderService, ModelMapper modelMapper, TripOrderValidator validator) {
         this.tripOrderService = tripOrderService;
         this.modelMapper = modelMapper;
         this.validator = validator;
-        this.rqm = rqm;
     }
     @GetMapping("/history")
     public List<TripOrder> getJoinedTrips(@RequestParam(value = "page",  required = false, defaultValue = "1") int pagenum,
@@ -51,8 +49,6 @@ public class TripOrderController {
         if(result.hasErrors())
             buildErrorMessageForClient(result);
         tripOrderService.join(o,(CustomerDetails)auth.getPrincipal());
-
-        //rqm.sendObject(modelMapper.map(res,TripOrderDTO.class), "q.order-create");
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @PatchMapping("/{id}")
@@ -63,7 +59,6 @@ public class TripOrderController {
         if(result.hasErrors() || res == null)
             buildErrorMessageForClient(result);
 
-        //rqm.sendObject(modelMapper.map(res,TripOrderDTO.class), "q.order-edit");
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @DeleteMapping("/{id}")

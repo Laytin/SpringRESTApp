@@ -5,7 +5,8 @@ import com.laytin.SpringRESTApp.repositories.CustomerRepository;
 import com.laytin.SpringRESTApp.repositories.TripOrderRepository;
 import com.laytin.SpringRESTApp.repositories.TripRepository;
 import com.laytin.SpringRESTApp.security.CustomerDetails;
-import org.hibernate.Hibernate;
+import com.laytin.SpringRESTApp.utils.rabbitmq.RabbitMQSender;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -22,12 +23,13 @@ public class TripOrderService {
     private final CustomerRepository customerRepository;
     private final TripRepository tripRepository;
     private final TripOrderRepository tripOrderRepository;
-
-
-    public TripOrderService(CustomerRepository customerRepository, TripRepository tripRepository, TripOrderRepository tripOrderRepository) {
+    private final RabbitMQSender rqm;
+    @Autowired
+    public TripOrderService(CustomerRepository customerRepository, TripRepository tripRepository, TripOrderRepository tripOrderRepository, RabbitMQSender rqm) {
         this.customerRepository = customerRepository;
         this.tripRepository = tripRepository;
         this.tripOrderRepository = tripOrderRepository;
+        this.rqm = rqm;
     }
 
     public boolean join(TripOrder o, CustomerDetails principal) {
@@ -39,6 +41,7 @@ public class TripOrderService {
         o.setPassenger(principal.getCustomer());
         tripOrderRepository.save(o);
         tripRepository.save(t.get());
+        rqm.sendObject(o, "r.order-create");
         return true;
     }
     public List<TripOrder> getOrders(int pagenum, String valueWhat, CustomerDetails principal) {
@@ -69,11 +72,13 @@ public class TripOrderService {
         switch (status){
             case ACCEPTED:
                 to.get().setStatus(status);
-                tripRepository.save(t);
+                rqm.sendObject(to, "r.order-edit");
                 return tripOrderRepository.save(to.get());
             case CANCELED:
                 t.setFree_sits(t.getFree_sits()+to.get().getSits());
                 to.get().setStatus(status);
+                rqm.sendObject(to, "r.order-edit");
+                tripRepository.save(t);
                 return tripOrderRepository.save(to.get());
         }
         return null;
