@@ -24,4 +24,7 @@ When he has found a suitable ride, he can send a request to join the driver. The
 He is given the opportunity to see the current phone number of the "employer" to clarify questions. 
 After confirmation in the application, the number of seats is edited according to the action (acceptance or refusal).
 
-The user can also view not only current trips, but also trips created by him, see the history of all trips.
+The user can also view not only current trips, but also trips created by him, see the history of all joined trips.
+# Extension
+Also project have small RabbitMQ exaple with direct routing for notification microservices.
+Currently, both queues send a message to the same service, but in the future it is possible to expand the possible options for notifying the user by creating new queues (my service is EMAIL, but we can add smth like phone messages)
