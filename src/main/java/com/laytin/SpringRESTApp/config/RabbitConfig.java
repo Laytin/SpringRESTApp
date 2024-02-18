@@ -44,8 +44,12 @@ public class RabbitConfig {
         return new Jackson2JsonMessageConverter();
     }
     @Bean
-    public Queue myQueue() {
+    public Queue queueCreate() {
         return new Queue("q.order-create");
+    }
+    @Bean
+    public Queue queueEdit() {
+        return new Queue("q.order-edit");
     }
 
     @Bean
@@ -54,7 +58,11 @@ public class RabbitConfig {
     }
 
     @Bean
-    Binding binding(Queue queue, DirectExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with("r.order-create");
+    public Binding binding1(Queue queueCreate, DirectExchange exchange) {
+        return BindingBuilder.bind(queueCreate).to(exchange).with("r.order-create");
+    }
+    @Bean
+    public Binding binding2(Queue queueEdit, DirectExchange exchange) {
+        return BindingBuilder.bind(queueEdit).to(exchange).with("r.order-edit");
     }
 }
